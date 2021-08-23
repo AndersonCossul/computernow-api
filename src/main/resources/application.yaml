@@ -2,7 +2,18 @@ spring:
   output:
     ansi:
       enabled: ALWAYS
+  jpa:
+    show-sql: TRUE
 
 springdoc:
   swagger-ui:
     path: /swagger
+
+server:
+  error:
+    include-message: ALWAYS
+
+logging:
+  level:
+    root: INFO
+    br.unisinos.computernowapi: DEBUG
