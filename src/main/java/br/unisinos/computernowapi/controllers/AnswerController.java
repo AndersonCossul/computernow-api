@@ -1,10 +1,10 @@
 package br.unisinos.computernowapi.controllers;
 
-import br.unisinos.computernowapi.controllers.requests.ComputerRequest;
-import br.unisinos.computernowapi.controllers.responses.ComputerResponse;
-import br.unisinos.computernowapi.entities.ComputerEntity;
-import br.unisinos.computernowapi.exceptions.ComputerNotFoundException;
-import br.unisinos.computernowapi.services.ComputerService;
+import br.unisinos.computernowapi.controllers.requests.AnswerRequest;
+import br.unisinos.computernowapi.controllers.responses.AnswerResponse;
+import br.unisinos.computernowapi.entities.AnswerEntity;
+import br.unisinos.computernowapi.exceptions.AnswerNotFoundException;
+import br.unisinos.computernowapi.services.AnswerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -27,24 +27,24 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/v1/computer")
+@RequestMapping("/v1/answer")
 @RequiredArgsConstructor
-@Tag(name = "Computer")
+@Tag(name = "Answer")
 @Slf4j
-public class ComputerController {
+public class AnswerController {
     private final ModelMapper modelMapper;
-    private final ComputerService computerService;
+    private final AnswerService answerService;
 
     @GetMapping
-    @Operation(summary = "List all computers")
-    public List<ComputerResponse> findAll() {
+    @Operation(summary = "List all answers")
+    public List<AnswerResponse> findAll() {
         log.debug("findAll()");
 
-        List<ComputerEntity> list = computerService.findAll();
+        List<AnswerEntity> list = answerService.findAll();
         log.debug("list: " + list);
 
-        List<ComputerResponse> convertedList = list.stream()
-                .map(entity -> modelMapper.map(entity, ComputerResponse.class))
+        List<AnswerResponse> convertedList = list.stream()
+                .map(entity -> modelMapper.map(entity, AnswerResponse.class))
                 .collect(Collectors.toList());
         log.debug("converted list: " + convertedList);
 
@@ -52,66 +52,66 @@ public class ComputerController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Find a computer")
-    public ComputerResponse findById(@PathVariable("id") Long id) {
+    @Operation(summary = "Find an answer")
+    public AnswerResponse findById(@PathVariable("id") Long id) {
         log.debug("findById(" + id + ")");
 
-        ComputerEntity computerEntity;
+        AnswerEntity answerEntity;
 
         try {
-            computerEntity = computerService.findById(id);
-        } catch (ComputerNotFoundException e) {
+            answerEntity = answerService.findById(id);
+        } catch (AnswerNotFoundException e) {
             log.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
 
-        log.debug("entity: " + computerEntity);
+        log.debug("entity: " + answerEntity);
 
-        return modelMapper.map(computerEntity, ComputerResponse.class);
+        return modelMapper.map(answerEntity, AnswerResponse.class);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Create a new computer")
-    public ComputerResponse create(@Valid @RequestBody ComputerRequest request) {
+    @Operation(summary = "Create a new answer")
+    public AnswerResponse create(@Valid @RequestBody AnswerRequest request) {
         log.debug("create(" + request + ")");
 
-        ComputerEntity convertedRequest = modelMapper.map(request, ComputerEntity.class);
+        AnswerEntity convertedRequest = modelMapper.map(request, AnswerEntity.class);
         log.debug("convertedRequest: " + convertedRequest);
 
-        ComputerEntity newEntity = computerService.create(convertedRequest);
+        AnswerEntity newEntity = answerService.create(convertedRequest);
         log.debug("newEntity: " + newEntity);
 
-        return modelMapper.map(newEntity, ComputerResponse.class);
+        return modelMapper.map(newEntity, AnswerResponse.class);
     }
 
     @PutMapping("/update/{id}")
-    @Operation(summary = "Update a computer")
-    public ComputerResponse update(@PathVariable("id") Long id, @Valid @RequestBody ComputerRequest request) {
+    @Operation(summary = "Update an answer")
+    public AnswerResponse update(@PathVariable("id") Long id, @Valid @RequestBody AnswerRequest request) {
         log.debug(String.format("update(%s, %s)", id, request));
 
-        ComputerEntity computerEntity = modelMapper.map(request, ComputerEntity.class);
-        computerEntity.setId(id);
-        log.debug("computerEntity: " + computerEntity);
+        AnswerEntity answerEntity = modelMapper.map(request, AnswerEntity.class);
+        answerEntity.setId(id);
+        log.debug("answerEntity: " + answerEntity);
 
         try {
-            ComputerEntity savedComputerEntity = computerService.update(computerEntity);
-            log.debug("savedComputerEntity: " + savedComputerEntity);
-            return modelMapper.map(savedComputerEntity, ComputerResponse.class);
-        } catch (ComputerNotFoundException e) {
+            AnswerEntity savedAnswerEntity = answerService.update(answerEntity);
+            log.debug("savedAnswerEntity: " + savedAnswerEntity);
+            return modelMapper.map(savedAnswerEntity, AnswerResponse.class);
+        } catch (AnswerNotFoundException e) {
             log.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
     @DeleteMapping("/delete/{id}")
-    @Operation(summary = "Delete a computer")
+    @Operation(summary = "Delete an answer")
     public void delete(@PathVariable("id") Long id) {
         log.debug("delete(" + id + ")");
 
         try {
-            computerService.delete(id);
-        } catch (ComputerNotFoundException e) {
+            answerService.delete(id);
+        } catch (AnswerNotFoundException e) {
             log.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
