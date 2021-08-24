@@ -5,7 +5,7 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class AnswerRelateRequest {
+public class QuestionRelateRequest {
     @NotNull
-    private Long computerId;
+    private Long answerId;
 }

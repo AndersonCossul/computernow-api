@@ -7,6 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 
 @Data
@@ -17,6 +18,7 @@ public class ComputerRequest {
     private String name;
     private String description;
     @Min(0)
+    @NotNull
     private Double price;
 
     public OSEnum getOs() {
