@@ -1,6 +1,6 @@
 package br.unisinos.computernowapi.entities;
 
-import br.unisinos.computernowapi.enums.SOEnum;
+import br.unisinos.computernowapi.enums.OSEnum;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Objects;
 
@@ -22,11 +23,11 @@ import java.util.Objects;
 @Entity
 public class ComputerEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column
     @Enumerated(EnumType.STRING)
-    private SOEnum so;
+    private OSEnum os;
     @Column
     private String name;
     @Column

@@ -85,7 +85,7 @@ public class ComputerController {
         return modelMapper.map(newEntity, ComputerResponse.class);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     @Operation(summary = "Update a computer")
     public ComputerResponse update(@PathVariable("id") Long id, @Valid @RequestBody ComputerRequest request) {
         log.debug(String.format("update(%s, %s)", id, request));
@@ -104,7 +104,7 @@ public class ComputerController {
         }
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     @Operation(summary = "Delete a computer")
     public void delete(@PathVariable("id") Long id) {
         log.debug("delete(" + id + ")");

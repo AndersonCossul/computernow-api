@@ -1,6 +1,6 @@
 package br.unisinos.computernowapi.enums;
 
-public enum SOEnum {
+public enum OSEnum {
     LINUX,
     WINDOWS,
     MACOS

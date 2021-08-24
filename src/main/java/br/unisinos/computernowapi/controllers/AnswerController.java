@@ -1,9 +1,11 @@
 package br.unisinos.computernowapi.controllers;
 
+import br.unisinos.computernowapi.controllers.requests.AnswerRelateRequest;
 import br.unisinos.computernowapi.controllers.requests.AnswerRequest;
 import br.unisinos.computernowapi.controllers.responses.AnswerResponse;
 import br.unisinos.computernowapi.entities.AnswerEntity;
 import br.unisinos.computernowapi.exceptions.AnswerNotFoundException;
+import br.unisinos.computernowapi.exceptions.ComputerNotFoundException;
 import br.unisinos.computernowapi.services.AnswerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -85,7 +87,7 @@ public class AnswerController {
         return modelMapper.map(newEntity, AnswerResponse.class);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     @Operation(summary = "Update an answer")
     public AnswerResponse update(@PathVariable("id") Long id, @Valid @RequestBody AnswerRequest request) {
         log.debug(String.format("update(%s, %s)", id, request));
@@ -104,7 +106,7 @@ public class AnswerController {
         }
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     @Operation(summary = "Delete an answer")
     public void delete(@PathVariable("id") Long id) {
         log.debug("delete(" + id + ")");
@@ -112,6 +114,42 @@ public class AnswerController {
         try {
             answerService.delete(id);
         } catch (AnswerNotFoundException e) {
+            log.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @PostMapping("/{id}/computers/add")
+    @Operation(summary = "Relate an answer to a computer")
+    public AnswerResponse relateComputerToAnswer(@PathVariable("id") Long id, @Valid @RequestBody AnswerRelateRequest request) {
+        log.debug(String.format("relateComputerToAnswer(%s, %s)", id, request));
+
+        try {
+            AnswerEntity savedAnswerEntity = answerService.relateComputerToAnswer(id, request.getComputerId());
+            log.debug("savedAnswer" + savedAnswerEntity);
+
+            AnswerResponse convertedAnswer = modelMapper.map(savedAnswerEntity, AnswerResponse.class);
+            log.debug("convertedAnswer" + convertedAnswer);
+            return convertedAnswer;
+        } catch (AnswerNotFoundException | ComputerNotFoundException e) {
+            log.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @PostMapping("/{id}/computers/remove")
+    @Operation(summary = "Remove a computer from an answer")
+    public AnswerResponse removeComputerFromAnswer(@PathVariable("id") Long id, @Valid @RequestBody AnswerRelateRequest request) {
+        log.debug(String.format("removeComputerFromAnswer(%s, %s)", id, request));
+
+        try {
+            AnswerEntity savedAnswerEntity = answerService.removeComputerFromAnswer(id, request.getComputerId());
+            log.debug("savedAnswer" + savedAnswerEntity);
+
+            AnswerResponse convertedAnswer = modelMapper.map(savedAnswerEntity, AnswerResponse.class);
+            log.debug("convertedAnswer" + convertedAnswer);
+            return convertedAnswer;
+        } catch (AnswerNotFoundException | ComputerNotFoundException e) {
             log.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

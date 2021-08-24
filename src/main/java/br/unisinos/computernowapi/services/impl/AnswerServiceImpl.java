@@ -1,17 +1,18 @@
 package br.unisinos.computernowapi.services.impl;
 
 import br.unisinos.computernowapi.entities.AnswerEntity;
+import br.unisinos.computernowapi.entities.ComputerEntity;
 import br.unisinos.computernowapi.exceptions.AnswerNotFoundException;
 import br.unisinos.computernowapi.exceptions.ComputerNotFoundException;
 import br.unisinos.computernowapi.repositories.AnswerRepository;
 import br.unisinos.computernowapi.services.AnswerService;
+import br.unisinos.computernowapi.services.ComputerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -19,6 +20,7 @@ import java.util.Optional;
 @Slf4j
 public class AnswerServiceImpl implements AnswerService {
     private final AnswerRepository answerRepository;
+    private final ComputerService computerService;
 
     @Override
     public List<AnswerEntity> findAll() {
@@ -54,13 +56,45 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     @Transactional
-    public void delete(Long id) throws NoSuchElementException {
+    public void delete(Long id) throws AnswerNotFoundException {
         log.debug("delete(" + id + ")");
         if (!answerRepository.existsById(id)) {
-            ComputerNotFoundException e = new ComputerNotFoundException(id);
+            AnswerNotFoundException e = new AnswerNotFoundException(id);
             log.error(e.getMessage());
             throw e;
         }
         answerRepository.deleteById(id);
+    }
+
+    @Override
+    public AnswerEntity relateComputerToAnswer(Long answerId, Long computerId) throws AnswerNotFoundException, ComputerNotFoundException {
+        log.debug(String.format("relateComputerToAnswer(%s, %s)", answerId, computerId));
+
+        AnswerEntity answerEntity = findById(answerId);
+        log.debug("answerEntity" + answerEntity);
+
+        ComputerEntity computerEntity = computerService.findById(computerId);
+        log.debug("computerEntity" + computerEntity);
+
+        answerEntity.addComputer(computerEntity);
+        log.debug("answerEntity after added computer" + answerEntity);
+
+        return answerRepository.save(answerEntity);
+    }
+
+    @Override
+    public AnswerEntity removeComputerFromAnswer(Long answerId, Long computerId) throws AnswerNotFoundException, ComputerNotFoundException {
+        log.debug(String.format("removeComputerFromAnswer(%s, %s)", answerId, computerId));
+
+        AnswerEntity answerEntity = findById(answerId);
+        log.debug("answerEntity" + answerEntity);
+
+        ComputerEntity computerEntity = computerService.findById(computerId);
+        log.debug("computerEntity" + computerEntity);
+
+        answerEntity.removeComputer(computerEntity);
+        log.debug("answerEntity after removal computer" + answerEntity);
+
+        return answerRepository.save(answerEntity);
     }
 }
