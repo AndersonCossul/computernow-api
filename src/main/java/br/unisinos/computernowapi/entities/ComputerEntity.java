@@ -29,7 +29,7 @@ public class ComputerEntity {
     @Enumerated(EnumType.STRING)
     private OSEnum os;
     @Column
-    private String name;
+    private String title;
     @Column
     private String description;
     @Column

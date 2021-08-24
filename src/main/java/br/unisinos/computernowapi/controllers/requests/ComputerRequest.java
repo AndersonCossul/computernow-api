@@ -15,7 +15,7 @@ public class ComputerRequest {
     @NotEmpty
     private String os;
     @NotEmpty
-    private String name;
+    private String title;
     private String description;
     @Min(0)
     @NotNull

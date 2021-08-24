@@ -8,7 +8,7 @@ import lombok.Data;
 public class ComputerResponse {
     private Long id;
     private OSEnum os;
-    private String name;
+    private String title;
     private String description;
     private Double price;
 }
